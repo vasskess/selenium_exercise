@@ -1,23 +1,83 @@
-# import time
+import time
 
-# from selenium.webdriver.common.by import By
-# from selenium.webdriver.support.ui import WebDriverWait
-# from selenium.webdriver.support import expected_conditions as ec
-# accept_btn = driver.find_element(by=By.ID, value="onetrust-accept-btn-handler")
-# time.sleep(2)
-# accept_btn.click()
+# Importing helper functions and constants
+from booking.helpers.popup_remover import remove_popup_if_presenter
+from booking.helpers.click_helper import click_with_delay
 import booking.constants as const
+
+from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 
 
+# Creating a Booking class that inherits from the Chrome WebDriver
 class Booking(webdriver.Chrome):
-    def __init__(self):
+    def __init__(self, teardown=False):
+        # Represents the ChromeOptions object, which allows customization of browser behavior.
         self.options = webdriver.ChromeOptions()
+        #  Adds an experimental option to detach the browser window from the driver.
         self.options.add_experimental_option("detach", True)
+        #  Represents the ChromeService object, which configures the ChromeDriver.
         self.service = ChromeService(ChromeDriverManager().install())
+        # Boolean flag to determine whether to close the browser on exit
+        self.teardown = teardown
+        # Calling the constructor of the parent class
         super().__init__(service=self.service, options=self.options)
+        """ Sets the implicit wait time to 5 seconds, allowing the WebDriver to wait
+        for elements to be located before raising an exception."""
+        self.implicitly_wait(5)
+        #  Maximizes the browser window
+        self.maximize_window()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # Closing the browser if the teardown flag is set
+        if self.teardown:
+            time.sleep(2)
+            self.quit()
 
     def land_first_page(self):
+        # Navigating to the base URL
         self.get(const.BASE_URL)
+
+    def accept_cookies(self):
+        # Locating and clicking the accept cookies button
+        accept_btn = self.find_element(by=By.ID, value="onetrust-accept-btn-handler")
+        click_with_delay(accept_btn)
+        # Removing popup if presented
+        remove_popup_if_presenter(self)
+
+    def change_language(self):
+        # Locating and clicking the language button
+        language_button = self.find_element(
+            by=By.CSS_SELECTOR, value="[data-testid='header-language-picker-trigger']"
+        )
+        click_with_delay(language_button)
+
+        # Locating and clicking the language selection button
+        select_language = self.find_element(
+            by=By.XPATH, value="//button[contains(., 'Български')]"
+        )
+        click_with_delay(select_language)
+        # Removing popup if presented
+        remove_popup_if_presenter(self)
+
+    def select_location(self):
+        # Locating the input field and entering a location
+        input_field = self.find_element(by=By.CSS_SELECTOR, value="[name='ss']")
+        input_field.send_keys("Vratza")
+
+    def select_dates(self):
+        # Locating and clicking the date field
+        date_field = self.find_element(
+            by=By.CSS_SELECTOR, value="[data-testid='searchbox-dates-container']"
+        )
+        click_with_delay(date_field)
+
+        # Locating and clicking the switch month button twice
+        switch_month_button = self.find_element(
+            by=By.XPATH,
+            value="//div[@data-testid='searchbox-datepicker-calendar']/button",
+        )
+        click_with_delay(switch_month_button)
+        click_with_delay(switch_month_button)
