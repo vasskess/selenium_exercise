@@ -81,3 +81,51 @@ class Booking(webdriver.Chrome):
         )
         click_with_delay(switch_month_button)
         click_with_delay(switch_month_button)
+        check_in_date = self.find_element(
+            by=By.CSS_SELECTOR, value="[data-date='2024-02-14']"
+        )
+        check_out_date = self.find_element(
+            by=By.CSS_SELECTOR, value="[data-date='2024-02-16']"
+        )
+        click_with_delay(check_in_date)
+        click_with_delay(check_out_date)
+
+    def select_adults(self):
+        selection_field = self.find_element(
+            by=By.CSS_SELECTOR, value="[data-testid='occupancy-config']"
+        )
+        click_with_delay(selection_field)
+
+        while True:
+            decrease_adults_button = self.find_element(
+                by=By.XPATH, value="//div[@class='bfb38641b0']/button"
+            )
+            click_with_delay(decrease_adults_button)
+
+            adult_value_element = self.find_element(by=By.ID, value="group_adults")
+            adult_value = adult_value_element.get_attribute("value")
+
+            if int(adult_value) == 1:
+                break
+
+        increase_adults_button = self.find_element(
+            by=By.XPATH, value="//div[@class='bfb38641b0']/button[last()]"
+        )
+        # //div[@class='bfb38641b0']/button[2] - this is also usable for this case !
+
+        for _ in range(const.ADULTS):
+            click_with_delay(increase_adults_button)
+
+        increase_rooms_button = self.find_element(
+            by=By.XPATH,
+            value="//div[@class='a7a72174b8'][last()]/div[@class='bfb38641b0']/button[last()]",
+        )
+
+        for _ in range(const.ROOMS):
+            click_with_delay(increase_rooms_button)
+
+    def perform_search(self):
+        search_button = self.find_element(
+            by=By.CSS_SELECTOR, value="button[type='submit']"
+        )
+        click_with_delay(search_button)

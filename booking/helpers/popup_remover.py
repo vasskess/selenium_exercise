@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 
 from booking.helpers.click_helper import click_with_delay
 
+
 def remove_popup_if_presenter(driver):
     try:
         # Try to locate the profile dialog element
@@ -12,7 +13,7 @@ def remove_popup_if_presenter(driver):
         close_dialog_window = driver.find_element(
             by=By.CSS_SELECTOR,
             value="[aria-label='Затваряне на информацията за влизане в профила.'],"
-                  " [aria-label='Dismiss sign in information.'], [aria-label='Dismiss sign-in info.']",
+            " [aria-label='Dismiss sign in information.'], [aria-label='Dismiss sign-in info.']",
         )
 
         # Click on the close dialog window element to remove the popup
