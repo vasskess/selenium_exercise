@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from booking.helpers.click_helper import click_with_delay
 
 
-def remove_popup_if_presenter(driver):
+def remove_popup_if_presented(driver):
     try:
         # Try to locate the profile dialog element
         profile_dialog = driver.find_element(by=By.CLASS_NAME, value="eb33ef7c47")

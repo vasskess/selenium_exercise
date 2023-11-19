@@ -1,7 +1,7 @@
 import time
 
 # Importing helper functions and constants
-from booking.helpers.popup_remover import remove_popup_if_presenter
+from booking.helpers.popup_remover import remove_popup_if_presented
 from booking.helpers.click_helper import click_with_delay
 import booking.constants as const
 
@@ -45,7 +45,7 @@ class Booking(webdriver.Chrome):
         accept_btn = self.find_element(by=By.ID, value="onetrust-accept-btn-handler")
         click_with_delay(accept_btn)
         # Removing popup if presented
-        remove_popup_if_presenter(self)
+        remove_popup_if_presented(self)
 
     def change_language(self):
         # Locating and clicking the language button
@@ -60,7 +60,7 @@ class Booking(webdriver.Chrome):
         )
         click_with_delay(select_language)
         # Removing popup if presented
-        remove_popup_if_presenter(self)
+        remove_popup_if_presented(self)
 
     def select_location(self):
         # Locating the input field and entering a location
@@ -81,6 +81,8 @@ class Booking(webdriver.Chrome):
         )
         click_with_delay(switch_month_button)
         click_with_delay(switch_month_button)
+
+        # Locating and clicking the check-in and check-out dates
         check_in_date = self.find_element(
             by=By.CSS_SELECTOR, value="[data-date='2024-02-14']"
         )
@@ -91,11 +93,13 @@ class Booking(webdriver.Chrome):
         click_with_delay(check_out_date)
 
     def select_adults(self):
+        # Locating and clicking the occupancy configuration field
         selection_field = self.find_element(
             by=By.CSS_SELECTOR, value="[data-testid='occupancy-config']"
         )
-        click_with_delay(selection_field)
+        selection_field.click()
 
+        # Decreasing the number of adults to 1
         while True:
             decrease_adults_button = self.find_element(
                 by=By.XPATH, value="//div[@class='bfb38641b0']/button"
@@ -108,6 +112,7 @@ class Booking(webdriver.Chrome):
             if int(adult_value) == 1:
                 break
 
+        # Increasing the number of adults and rooms based on predefined constants
         increase_adults_button = self.find_element(
             by=By.XPATH, value="//div[@class='bfb38641b0']/button[last()]"
         )
@@ -125,6 +130,7 @@ class Booking(webdriver.Chrome):
             click_with_delay(increase_rooms_button)
 
     def perform_search(self):
+        # Locating and clicking the search button
         search_button = self.find_element(
             by=By.CSS_SELECTOR, value="button[type='submit']"
         )
