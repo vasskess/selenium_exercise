@@ -24,7 +24,7 @@ Additionally, the project includes the following helper functions:
 ## Installation
 
 1. Clone the repository to your local machine:<br>
-```git clone https://github.com/your-username/selenium-booking-automation.git```
+```git clone https://github.com/vasskess/selenium_exercise.git```
 
 2. Install the required dependencies:<br>
 ```pip install -r requirements.txt```
